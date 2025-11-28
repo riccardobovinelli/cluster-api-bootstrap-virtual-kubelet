@@ -1,0 +1,92 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: manager-role
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - secrets
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - bootstrap.cluster.x-k8s.io
+  resources:
+  - virtualkubeletconfigs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - bootstrap.cluster.x-k8s.io
+  resources:
+  - virtualkubeletconfigs/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - bootstrap.cluster.x-k8s.io
+  resources:
+  - virtualkubeletconfigs/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - bootstrap.cluster.x-k8s.io
+  resources:
+  - virtualkubeletconfigtemplates
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - bootstrap.cluster.x-k8s.io
+  resources:
+  - virtualkubeletconfigtemplates/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - bootstrap.cluster.x-k8s.io
+  resources:
+  - virtualkubeletconfigtemplates/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - cluster.x-k8s.io
+  resources:
+  - clusters
+  - clusters/status
+  - machinepools
+  - machinepools/status
+  - machines
+  - machines/status
+  - machinesets
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - patch

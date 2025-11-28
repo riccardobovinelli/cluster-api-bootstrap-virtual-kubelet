@@ -1,0 +1,31 @@
+# permissions for end users to edit virtualkubeletconfigs.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/instance: virtualkubeletconfig-editor-role
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: cluster-api-bootstrap-virtual-kubelet
+    app.kubernetes.io/part-of: cluster-api-bootstrap-virtual-kubelet
+    app.kubernetes.io/managed-by: kustomize
+  name: virtualkubeletconfig-editor-role
+rules:
+- apiGroups:
+  - bootstrap.cluster.x-k8s.io
+  resources:
+  - virtualkubeletconfigs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - bootstrap.cluster.x-k8s.io
+  resources:
+  - virtualkubeletconfigs/status
+  verbs:
+  - get
