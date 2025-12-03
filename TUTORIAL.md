@@ -4,7 +4,7 @@
 
 
 Install the Metal3 Dev Env
-```
+```bash
 git clone https://github.com/metal3-io/metal3-dev-env.gitcd metal3-dev-env/
 
 cat > config_${USER}.sh << EOF
@@ -29,14 +29,14 @@ make
 
 Provision a Kubernetes cluster and related control plane via Cluster API
 
-```
+```bash
 ./tests/scripts/provision/cluster.sh
 ./tests/scripts/provision/controlplane.sh
 ```
 
 
 Make the virtual Kubelet available over the network
-```
+```bash
 git clone  git@github.com:mgazz/virtual-kubelet.git
 cd virtual-kubelet
 git checkout capi
@@ -49,7 +49,7 @@ chmod a+rwx /opt/metal3-dev-env/ironic/html/images/virtual-kubelet
 
 
 Download and build the Cluster API Bootstrap Provider Virtual Kubelet (CBPV)
-```
+```bash
  git clone git@github.ibm.com:Accelerated-Discovery/cluster-api-bootstrap-virtual-kubelet.git
  cd cluster-api-bootstrap-virtual-kubelet/
 
@@ -74,7 +74,7 @@ Add the `sshAuthorizedKeys` to both
 and
 [slurm-worker.yaml](./examples/slurm/machineDeployments/slurm-worker.yaml)
 
-```
+```yaml
 users:
 - name: hpcuser
     sudo: ALL=(ALL) NOPASSWD:ALL
@@ -84,13 +84,13 @@ users:
 ```
 
 Deploy the Slurm head node
-```
+```bash
 kubectl apply -f examples/slurm/machineDeployments/slurm-head.yaml
 ```
 
 
 Deploy the Slurm worker nodes
-```
+```bash
 kubectl apply -f examples/slurm/machineDeployments/slurm-head.yaml
 ```
 
