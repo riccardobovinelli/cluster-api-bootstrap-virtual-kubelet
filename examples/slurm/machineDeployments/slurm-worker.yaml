@@ -8,7 +8,7 @@ metadata:
   namespace: metal3
 spec:
   clusterName:  workload-cluster
-  replicas: 0
+  replicas: 4
   selector:
     matchLabels:
       cluster.x-k8s.io/cluster-name:  workload-cluster
@@ -45,6 +45,10 @@ metadata:
 spec:
   template:
     spec:
+      virtualKubelet:
+        url: http://172.22.0.1/virtual-kubelet
+        args:
+          - --provider mock
       format: cloud-config
       files:
         - content: |
@@ -149,9 +153,9 @@ spec:
             . /etc/profile
             module load mpi
             sudo yum install nfs-utils -y
-            mkdir -p /home/mik/slurm_tests
-            sudo chmod 777 /home/mik/slurm_tests
-            sudo mount -t nfs 192.168.111.248:/home/mik/slurm_tests /home/mik/slurm_tests
+            mkdir -p /home/hpcuser/slurm_tests
+            sudo chmod 777 /home/hpcuser/slurm_tests
+            sudo mount -t nfs 192.168.111.248:/home/hpcuser/slurm_tests /home/hpcuser/slurm_tests
           path: /tmp/setup_mpich_nfs.sh
           permissions: '0744'   
         - content: !!binary |
@@ -196,18 +200,21 @@ spec:
             U2x1cm1jbHVzdGVyKQoJaHR0cC5MaXN0ZW5BbmRTZXJ2ZSgiOjgwOTAiLCBuaWwpCn0K
           path: /tmp/server.go
           permissions: '0777'
-        - content: |`
+        - content: |
             #!/bin/sh
 
-            export HOME=/home/mik
-            export GOCACHE=/home/mik/.cache/go-build
+            export HOME=/home/hpcuser
+            export GOCACHE=/home/hpcuser/.cache/go-build
             go build -v -x -o /tmp/server /tmp/server.go
             ./tmp/server > /tmp/server.log 2>&1 &
           path: /tmp/setup_go_server.sh
           permissions: '0744'  
       users:
-        - name: mik
+        - name: hpcuser
           sudo: ALL=(ALL) NOPASSWD:ALL
+          sshAuthorizedKeys:
+          - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJnHBVNsOMLXNwQq3H42SUAqUd+lbHs/aSfdVAIWziMG user@adcpu28
+          #lock-passwd: false
       commands:
         - ./tmp/setup_go_server.sh
         - sudo mkdir -p /etc/munge/

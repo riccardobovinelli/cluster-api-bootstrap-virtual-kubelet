@@ -8,7 +8,7 @@ metadata:
   namespace: metal3
 spec:
   clusterName: workload-cluster
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
       cluster.x-k8s.io/cluster-name: workload-cluster
@@ -128,6 +128,10 @@ metadata:
 spec:
   template:
     spec:
+      virtualKubelet:
+        url: http://172.22.0.1/virtual-kubelet
+        args:
+          - --provider mock
       format: cloud-config
       files:
         - content: |
@@ -231,11 +235,11 @@ spec:
             . /etc/profile
             module load mpi
             sudo yum install nfs-utils -y
-            mkdir /home/mik/slurm_tests
-            sudo chmod 777 /home/mik/slurm_tests
+            mkdir /home/hpcuser/slurm_tests
+            sudo chmod 777 /home/hpcuser/slurm_tests
             sudo systemctl start rpcbind
             sudo systemctl start nfs-server
-            echo "/home/mik/slurm_tests   192.168.111.248/24(rw,sync,no_root_squash)" | sudo tee -a /etc/exports
+            echo "/home/hpcuser/slurm_tests   192.168.111.248/24(rw,sync,no_root_squash)" | sudo tee -a /etc/exports
             sudo systemctl restart nfs-server
           path: /tmp/setup-mpich-nfs-head.sh
           permissions: '0744'
@@ -276,17 +280,22 @@ spec:
                 MPI_Finalize();
                 return 0;
             }
-          path: /home/mik/slurm_tests/mpi-hello-world.c
+          path: /home/hpcuser/slurm_tests/mpi-hello-world.c
           permissions: '0744'
         - content: |
             module load mpi
             mpicc mpi-hello-world.c -o mpi-hello-world
-            sudo srun -N 6 --mpi=pmi2 mpi-hello-world
-          path: /home/mik/slurm_tests/hello-world.sh
+            sudo srun -N 2 --mpi=pmi2 mpi-hello-world
+          path: /home/hpcuser/slurm_tests/hello-world.sh
           permissions: '0747'
       users:
-        - name: mik
+        - name: hpcuser
           sudo: ALL=(ALL) NOPASSWD:ALL
+          sshAuthorizedKeys:
+          - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJnHBVNsOMLXNwQq3H42SUAqUd+lbHs/aSfdVAIWziMG user@adcpu28
+          #lock-passwd: false
+          #ssh_pwauth: True
+          #chpasswd: { expire: False }
       commands:
         - sudo mkdir -p /etc/munge/
         - cat /tmp/munge.key | base64 -d | sudo tee -a /etc/munge/munge.key

@@ -60,11 +60,34 @@ make build-installer
 kubectl apply -f dist/install.yaml
 ```
 
+Install the Slurm Detach Handler
+```
+cd examples/slurm/slurmDetachHandler/slurm-operator/
+make build-installer
+kubectl apply -f dist/install.yaml
+cd -
+```
+
+
+Add the `sshAuthorizedKeys` to both 
+[slurm-head.yaml](./examples/slurm/machineDeployments/slurm-head.yaml)
+and
+[slurm-worker.yaml](./examples/slurm/machineDeployments/slurm-worker.yaml)
+
+```
+users:
+- name: hpcuser
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    sshAuthorizedKeys:
+    - <SSH_PUBLIC_KEY>
+
+```
 
 Deploy the Slurm head node
 ```
 kubectl apply -f examples/slurm/machineDeployments/slurm-head.yaml
 ```
+
 
 Deploy the Slurm worker nodes
 ```
