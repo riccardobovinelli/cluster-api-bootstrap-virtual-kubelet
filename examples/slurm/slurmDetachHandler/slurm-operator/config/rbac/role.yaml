@@ -5,28 +5,13 @@ metadata:
   name: manager-role
 rules:
 - apiGroups:
-  - cluster.x-k8s.io.mydomain.com
+  - cluster.x-k8s.io
   resources:
+  - machinepools
+  - machinepools/status
   - machines
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - cluster.x-k8s.io.mydomain.com
-  resources:
-  - machines/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - cluster.x-k8s.io.mydomain.com
-  resources:
   - machines/status
   verbs:
   - get
-  - patch
-  - update
+  - list
+  - watch

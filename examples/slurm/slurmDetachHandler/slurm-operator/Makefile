@@ -28,8 +28,8 @@ BUNDLE_METADATA_OPTS ?= $(BUNDLE_CHANNELS) $(BUNDLE_DEFAULT_CHANNEL)
 # This variable is used to construct full image tags for bundle and catalog images.
 #
 # For example, running 'make bundle-build bundle-push catalog-build catalog-push' will build and push both
-# mydomain.com/slurm-operator-bundle:$VERSION and mydomain.com/slurm-operator-catalog:$VERSION.
-IMAGE_TAG_BASE ?= mydomain.com/slurm-operator
+# mydomain.com/detach-handler-bundle:$VERSION and mydomain.com/detach-handler-catalog:$VERSION.
+IMAGE_TAG_BASE ?= mydomain.com/detach-handler
 
 # BUNDLE_IMG defines the image:tag used for the bundle.
 # You can use it as an arg. (E.g make bundle-build BUNDLE_IMG=<some-registry>/<project-name-bundle>:<tag>)
@@ -159,10 +159,10 @@ PLATFORMS ?= linux/arm64,linux/amd64,linux/s390x,linux/ppc64le
 docker-buildx: ## Build and push docker image for the manager for cross-platform support
 	# copy existing Dockerfile and insert --platform=${BUILDPLATFORM} into Dockerfile.cross, and preserve the original Dockerfile
 	sed -e '1 s/\(^FROM\)/FROM --platform=\$$\{BUILDPLATFORM\}/; t' -e ' 1,// s//FROM --platform=\$$\{BUILDPLATFORM\}/' Dockerfile > Dockerfile.cross
-	- $(CONTAINER_TOOL) buildx create --name slurm-operator-builder
-	$(CONTAINER_TOOL) buildx use slurm-operator-builder
+	- $(CONTAINER_TOOL) buildx create --name detach-handler-builder
+	$(CONTAINER_TOOL) buildx use detach-handler-builder
 	- $(CONTAINER_TOOL) buildx build --push --platform=$(PLATFORMS) --tag ${IMG} -f Dockerfile.cross .
-	- $(CONTAINER_TOOL) buildx rm slurm-operator-builder
+	- $(CONTAINER_TOOL) buildx rm detach-handler-builder
 	rm Dockerfile.cross
 
 .PHONY: build-installer
